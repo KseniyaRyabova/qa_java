@@ -1,42 +1,45 @@
-import com.example.Cat;
+import com.example.Feline;
 import com.example.Lion;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.List;
-import java.util.logging.Level;
 
+@RunWith(MockitoJUnitRunner.class)
 public class LionTest {
 
     @Test
     public void getKittensForLion() throws Exception {
         Lion lion = new Lion("Самец");
         int actual = lion.getKittens();
-        int expected = 2;
+        int expected = 1;
         Assert.assertEquals(actual, expected);
     }
 
     @Test
     public void doesHaveManeWhenTrue() throws Exception {
-        Lion lion = new Lion("Самка");
+        /* как мне тут не пользоваться конструктором,
+        если я никак не могу инициализировать переменную hasMane класса Lion извне,
+        то есть, что делать, если нет метода, который я могу замокать?
+        Или в данном контексте нормальная ситуация,
+        что я проверяю инициализацию переменной через конструктор и мокать ничего не нужно?*/
+        Lion lion = new Lion("Самец");
         boolean actual = lion.doesHaveMane();
         boolean expected = false;
-        Assert.assertEquals(actual, expected);
+        Assert.assertEquals("Самец без гривы? Не может быть.", expected, actual);
     }
 
-//    как замокать объект, чтобы не нужно было создавать конструктор,
-//    но при этом методы возвращали реальные значения?
-//    То есть, например, что бы мок объекта Lion возвращал список своей еды,
-//    которая действительно есть по вызову lion.getFood() для объектов этого класса
-//    иначе получается зависимый от конструктора тест =(
+    @Mock
+    Feline feline;
 
     @Test
     public void getFoodForLion() throws Exception {
-        Lion lion = new Lion("Самка");
-        List <String> expected = List.of("Животные", "Птицы", "Рыба");
-        List <String> actual = lion.getFood();
-        Assert.assertEquals(actual, expected);
+        Lion lion = new Lion(feline);
+        List<String> expected = List.of("Животные", "Птицы", "Рыба");
+        List<String> actual = lion.getFood("Хищник");
+        Assert.assertEquals("Рацион не совпадает с ожидаемым: животные, птицы, рыбы", expected, actual);
     }
 }
