@@ -4,6 +4,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.List;
@@ -11,9 +12,13 @@ import java.util.List;
 @RunWith(MockitoJUnitRunner.class)
 public class LionTest {
 
+    @Mock
+    Feline feline;
+
     @Test
-    public void getKittensForLion() throws Exception {
-        Lion lion = new Lion("Самец");
+    public void getKittensForLion() {
+        Mockito.when(feline.getKittens()).thenReturn(1);
+        Lion lion = new Lion(feline);
         int actual = lion.getKittens();
         int expected = 1;
         Assert.assertEquals(actual, expected);
@@ -21,25 +26,21 @@ public class LionTest {
 
     @Test
     public void doesHaveManeWhenTrue() throws Exception {
-        /* как мне тут не пользоваться конструктором,
-        если я никак не могу инициализировать переменную hasMane класса Lion извне,
-        то есть, что делать, если нет метода, который я могу замокать?
-        Или в данном контексте нормальная ситуация,
-        что я проверяю инициализацию переменной через конструктор и мокать ничего не нужно?*/
         Lion lion = new Lion("Самец");
         boolean actual = lion.doesHaveMane();
+        System.out.println(actual);
         boolean expected = false;
         Assert.assertEquals("Самец без гривы? Не может быть.", expected, actual);
     }
 
-    @Mock
-    Feline feline;
+
 
     @Test
     public void getFoodForLion() throws Exception {
+        Mockito.when(feline.getFood(Mockito.anyString())).thenReturn(List.of("Животные", "Птицы", "Рыба"));
         Lion lion = new Lion(feline);
         List<String> expected = List.of("Животные", "Птицы", "Рыба");
-        List<String> actual = lion.getFood("Хищник");
+        List<String> actual = lion.getFood();
         Assert.assertEquals("Рацион не совпадает с ожидаемым: животные, птицы, рыбы", expected, actual);
     }
 }
