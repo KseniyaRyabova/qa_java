@@ -14,25 +14,24 @@ public class CreatorLionTest {
         this.expected = expected;
     }
 
-    @Parameterized.Parameters
+    @Parameterized.Parameters(name = "sex: {0}")
     public static Object[][] getManePositive() {
         return new Object[][]{
                 {"Самец", true},
                 {"Самка", false},
-                {"неопределенный пол", "Используйте допустимые значения пола животного - самец или самка"}
-        };
+                {"неопределенный пол", "Используйте допустимые значения пола животного - самец или самка"},
+                {null, "Используйте допустимые значения пола животного - самец или самка"}};
     }
 
     @Test
-    public void getManeForLionPositiveData(){
-        String exMessage = null;
+    public void getManeForLionPositiveData() {
         try {
             Lion lion = new Lion(sex);
             boolean actual = lion.doesHaveMane();
-            Assert.assertEquals(actual, expected);
+            Assert.assertEquals("Самка с гривой? Или Самец без? Эти современные львы...", expected, actual);
         } catch (Exception ex) {
-            exMessage = ex.getMessage();
-            Assert.assertEquals(exMessage, expected);
+            String actual = ex.getMessage();
+            Assert.assertEquals("Тут должно было быть исключение", expected, actual);
         }
     }
 
